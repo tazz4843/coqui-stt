@@ -2,6 +2,13 @@
 name = "coqui-stt"
 version = "0.1.0"
 edition = "2021"
+authors = ["0/0 <zero@imaskeleton.me>"]
+description = "Safe wrapper around the Coqui STT C library"
+license = "MPL-2.0"
+documentation = "https://docs.rs/coqui-stt"
+repository = "https://github.com/tazz4843/coqui-stt"
+keywords = ["speech-to-text", "stt"]
+categories = ["multimedia::audio"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
