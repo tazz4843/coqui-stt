@@ -15,5 +15,10 @@ categories = ["multimedia::audio"]
 [dependencies]
 coqui-stt-sys = "1.1.1"
 
+[dev-dependencies]
+audrey = "0.3"
+dasp_signal = "0.11"
+dasp_interpolate = { version = "0.11", features = ["linear"] }
+
 [features]
 raw-bindings = []
