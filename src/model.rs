@@ -1,5 +1,6 @@
 #![allow(clippy::missing_safety_doc)]
 use crate::{Metadata, Stream};
+use log::debug;
 use std::ffi::CStr;
 use std::sync::Arc;
 
@@ -258,18 +259,25 @@ impl Model {
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
     pub fn into_streaming(self) -> crate::Result<Stream> {
+        debug!("making nullptr for streaming state");
         let mut state = std::ptr::null_mut();
 
+        debug!("calling CreateStream");
         let retval = unsafe { coqui_stt_sys::STT_CreateStream(self.0, &mut state) };
 
+        debug!("checking retval");
         if let Some(e) = crate::Error::from_c_int(retval) {
+            debug!("retval was an error, bailing out");
             return Err(e);
         }
 
+        debug!("checking if ptr is null");
         if state.is_null() {
+            debug!("ptr is null, bailing out");
             return Err(crate::Error::Unknown);
         }
 
+        debug!("wrapping self in an Arc");
         let model = Arc::new(self);
 
         Ok(Stream { model, state })
