@@ -258,9 +258,9 @@ impl Model {
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
     pub fn into_streaming(self) -> crate::Result<Stream> {
-        let mut state = std::ptr::null_mut::<coqui_stt_sys::StreamingState>();
+        let mut state = std::ptr::null_mut();
 
-        let retval = unsafe { coqui_stt_sys::STT_CreateStream(self.0, &mut state as *mut _) };
+        let retval = unsafe { coqui_stt_sys::STT_CreateStream(self.0, &mut state) };
 
         if let Some(e) = crate::Error::from_c_int(retval) {
             return Err(e);
