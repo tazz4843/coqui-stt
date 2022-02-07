@@ -61,15 +61,11 @@ impl TokenMetadata {
 impl Debug for TokenMetadata {
     #[allow(clippy::missing_inline_in_public_items)]
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str("TokenMetadata { text: ")?;
-        f.write_fmt(format_args!("{:?}", self.text()))?;
-        f.write_str(", timestep: ")?;
-        f.write_fmt(format_args!("{:?}", self.timestep()))?;
-        f.write_str(", start_time: ")?;
-        f.write_fmt(format_args!("{:?}", self.start_time()))?;
-        f.write_str(" }")?;
-
-        Ok(())
+        f.debug_struct("TokenMetadata")
+            .field("text", &self.text())
+            .field("timestep", &self.timestep())
+            .field("start_time", &self.start_time())
+            .finish()
     }
 }
 
