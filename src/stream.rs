@@ -156,7 +156,6 @@ impl Stream {
     ///
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
-    #[doc(hidden)]
     #[allow(clippy::missing_inline_in_public_items)]
     pub fn intermediate_decode_with_buffer_flush(&self) -> crate::Result<String> {
         let ptr = unsafe { coqui_stt_sys::STT_IntermediateDecodeFlushBuffers(self.state) };
@@ -192,7 +191,6 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[inline]
-    #[doc(hidden)]
     pub fn intermediate_decode_with_metadata_and_buffer_flush(
         &self,
         num_results: u32,
