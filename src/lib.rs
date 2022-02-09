@@ -5,6 +5,14 @@
 //! * start by creating a [`Model`](Model),
 //! * if you have a scorer to load, call [`enable_external_scorer`](Model::enable_external_scorer),
 //! * then call [`speech_to_text`](Model::speech_to_text) to run the algorithm.
+//!
+//! # Features
+//! No features are enabled by default.
+//!
+//! * `raw-bindings`: exposes the [`coqui-stt-sys`](coqui_stt_sys) crate at the root under the same name.
+//! * `threadsafe-streams`: exposes a [`ThreadSafeStream`](crate::ThreadSafeStream) object at the root.
+//! * `async-streams`: exposes async bindings to `ThreadSafeStream`.
+//!   Enables [`flume`](flume)'s `async` feature.
 
 #[macro_use]
 mod helpers;
@@ -14,6 +22,8 @@ mod errors;
 mod metadata;
 mod model;
 mod stream;
+#[cfg(feature = "threadsafe-streams")]
+mod threadsafe_stream;
 mod token_metadata;
 
 pub use candidate_transcript::{CandidateTranscript, OwnedCandidateTranscript};
@@ -21,6 +31,8 @@ pub use errors::{Error, Result};
 pub use metadata::{Metadata, OwnedMetadata};
 pub use model::Model;
 pub use stream::Stream;
+#[cfg(feature = "threadsafe-streams")]
+pub use threadsafe_stream::ThreadSafeStream;
 pub use token_metadata::{OwnedTokenMetadata, TokenMetadata};
 
 #[cfg(feature = "raw_bindings")]

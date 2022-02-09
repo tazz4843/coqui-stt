@@ -13,8 +13,9 @@ categories = ["multimedia::audio"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-coqui-stt-sys = "1.1.1"
 log = "0.4.14"
+coqui-stt-sys = "1.1.1"
+flume = { version = "0.10", optional = true }
 
 [dev-dependencies]
 audrey = "0.3"
@@ -22,4 +23,7 @@ dasp_signal = "0.11"
 dasp_interpolate = { version = "0.11", features = ["linear"] }
 
 [features]
+default = []
 raw-bindings = []
+threadsafe-streams = ["flume"]
+async-streams = ["flume/async"]
