@@ -215,10 +215,13 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn finish_stream(self) -> crate::Result<String> {
-        let this = ManuallyDrop::new(self);
+    pub fn finish_stream(mut self) -> crate::Result<String> {
+        let ptr = unsafe { coqui_stt_sys::STT_FinishStream(self.state) };
 
-        let ptr = unsafe { coqui_stt_sys::STT_FinishStream(this.state) };
+        unsafe {
+            std::ptr::drop_in_place(&mut self.model);
+        }
+        std::mem::forget(self);
 
         if ptr.is_null() {
             return Err(crate::Error::Unknown);
@@ -248,11 +251,14 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[inline]
-    pub fn finish_stream_with_metadata(self, num_results: u32) -> crate::Result<Metadata> {
-        let this = ManuallyDrop::new(self);
-
+    pub fn finish_stream_with_metadata(mut self, num_results: u32) -> crate::Result<Metadata> {
         let ptr =
-            unsafe { coqui_stt_sys::STT_IntermediateDecodeWithMetadata(this.state, num_results) };
+            unsafe { coqui_stt_sys::STT_IntermediateDecodeWithMetadata(self.state, num_results) };
+
+        unsafe {
+            std::ptr::drop_in_place(&mut self.model);
+        }
+        std::mem::forget(self);
 
         if ptr.is_null() {
             return Err(crate::Error::Unknown);
