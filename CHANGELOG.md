@@ -1,3 +1,8 @@
+# Version 0.2.2 (5.3.2022)
+* Attempt fixing a corruption issue when stream ends.
+* Add build.rs to allow this to build on Windows platforms
+ (see [issue 3](https://github.com/tazz4843/coqui-stt/issues/3))
+
 # Version 0.2.1 (8.2.2022)
 * Adds a new ``ThreadSafeStream`` type,
   locked behind the ``threadsafe-streams`` feature flag.
