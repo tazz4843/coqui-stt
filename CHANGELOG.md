@@ -1,3 +1,8 @@
+# Version 0.2.3 (25.3.2022)
+* Update Coqui-STT to version 1.3.0
+* Add new functions `Model::new_from_buffer`
+  and `Model::enable_external_scorer_from_buffer`
+
 # Version 0.2.2 (5.3.2022)
 * Attempt fixing a corruption issue when stream ends.
 * Add build.rs to allow this to build on Windows platforms

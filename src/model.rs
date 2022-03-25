@@ -2,6 +2,7 @@
 use crate::{Metadata, Stream};
 use log::debug;
 use std::ffi::CStr;
+use std::os::raw::c_uint;
 use std::sync::Arc;
 
 /// A trained Coqui STT model.
@@ -41,6 +42,40 @@ impl Model {
         // both of which have been checked
         let retval = unsafe {
             coqui_stt_sys::STT_CreateModel(model_path.as_ptr(), std::ptr::addr_of_mut!(state))
+        };
+
+        if let Some(e) = crate::Error::from_c_int(retval) {
+            return Err(e);
+        }
+
+        if state.is_null() {
+            return Err(crate::Error::Unknown);
+        }
+
+        Ok(Self(state))
+    }
+
+    /// Create a new model from a memory buffer.
+    ///
+    /// # Errors
+    /// Returns an error if the model is invalid, or for other reasons.
+    #[inline]
+    pub fn new_from_buffer<'a>(buffer: impl AsRef<&'a [u8]>) -> crate::Result<Self> {
+        Self::_new_from_buffer(buffer.as_ref())
+    }
+
+    #[inline]
+    fn _new_from_buffer(buffer: &[u8]) -> crate::Result<Self> {
+        let mut state = std::ptr::null_mut::<coqui_stt_sys::ModelState>();
+
+        // SAFETY: creating a model is only done with a null pointer and a model buffer
+        // both of which have been checked
+        let retval = unsafe {
+            coqui_stt_sys::STT_CreateModelFromBuffer(
+                buffer.as_ptr().cast::<i8>(),
+                buffer.len() as c_uint,
+                std::ptr::addr_of_mut!(state),
+            )
         };
 
         if let Some(e) = crate::Error::from_c_int(retval) {
@@ -98,6 +133,27 @@ impl Model {
         handle_error!(coqui_stt_sys::STT_EnableExternalScorer(
             self.0,
             scorer_path.as_ptr()
+        ))
+    }
+
+    /// Enable an external scorer for this model, loaded from a buffer in memory.
+    ///
+    /// # Errors
+    /// Returns an error if the scorer in memory is invalid in some way.
+    #[inline]
+    pub fn enable_external_scorer_from_buffer(
+        &mut self,
+        buffer: impl AsRef<[u8]>,
+    ) -> crate::Result<()> {
+        self._enable_external_scorer_from_buffer(buffer.as_ref())
+    }
+
+    #[inline]
+    fn _enable_external_scorer_from_buffer(&mut self, buffer: &[u8]) -> crate::Result<()> {
+        handle_error!(coqui_stt_sys::STT_EnableExternalScorerFromBuffer(
+            self.0,
+            buffer.as_ptr().cast::<i8>(),
+            buffer.len() as c_uint
         ))
     }
 
@@ -194,11 +250,7 @@ impl Model {
     #[allow(clippy::missing_inline_in_public_items)]
     pub fn speech_to_text(&mut self, buffer: &[i16]) -> crate::Result<String> {
         let ptr = unsafe {
-            coqui_stt_sys::STT_SpeechToText(
-                self.0,
-                buffer.as_ptr(),
-                buffer.len() as std::os::raw::c_uint,
-            )
+            coqui_stt_sys::STT_SpeechToText(self.0, buffer.as_ptr(), buffer.len() as c_uint)
         };
 
         if ptr.is_null() {
@@ -238,7 +290,7 @@ impl Model {
             coqui_stt_sys::STT_SpeechToTextWithMetadata(
                 self.0,
                 buffer.as_ptr(),
-                buffer.len() as std::os::raw::c_uint,
+                buffer.len() as c_uint,
                 num_results,
             )
         };
