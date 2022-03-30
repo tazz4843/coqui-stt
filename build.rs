@@ -8,6 +8,7 @@ fn main() {
     println!(r"cargo:rustc-link-search=C:\stt");
     println!("cargo:rustc-link-lib=dylib=libstt.so.if");
     println!("cargo:rustc-link-lib=dylib=libkenlm.so.if");
+    println!("cargo:rustc-link-lib=deepspeech");
 }
 
 #[cfg(not(target_os = "windows"))]
