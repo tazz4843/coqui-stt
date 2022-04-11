@@ -9,6 +9,8 @@ pub struct Stream {
     pub(crate) state: *mut coqui_stt_sys::StreamingState,
 }
 
+unsafe impl Send for Stream {}
+
 impl Drop for Stream {
     #[inline]
     fn drop(&mut self) {
