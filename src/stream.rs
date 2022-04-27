@@ -9,6 +9,16 @@ pub struct Stream {
     pub(crate) state: *mut coqui_stt_sys::StreamingState,
 }
 
+// NOTE:
+// Streams are thread-safe, with one major caveat:
+// they cannot be used from multiple threads concurrently.
+// The only reason we can safely implement Sync is because
+// the compiler statically enforces that this is used from
+// only one thread at a time with mutable references on all
+// functions that access the C API.
+unsafe impl Send for Stream {}
+unsafe impl Sync for Stream {}
+
 impl Drop for Stream {
     #[inline]
     fn drop(&mut self) {
@@ -109,7 +119,7 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn intermediate_decode(&self) -> crate::Result<String> {
+    pub fn intermediate_decode(&mut self) -> crate::Result<String> {
         let ptr = unsafe { coqui_stt_sys::STT_IntermediateDecode(self.state as *const _) };
 
         if ptr.is_null() {
@@ -133,7 +143,10 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[inline]
-    pub fn intermediate_decode_with_metadata(&self, num_results: u32) -> crate::Result<Metadata> {
+    pub fn intermediate_decode_with_metadata(
+        &mut self,
+        num_results: u32,
+    ) -> crate::Result<Metadata> {
         let ptr =
             unsafe { coqui_stt_sys::STT_IntermediateDecodeWithMetadata(self.state, num_results) };
 
@@ -157,7 +170,7 @@ impl Stream {
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn intermediate_decode_with_buffer_flush(&self) -> crate::Result<String> {
+    pub fn intermediate_decode_with_buffer_flush(&mut self) -> crate::Result<String> {
         let ptr = unsafe { coqui_stt_sys::STT_IntermediateDecodeFlushBuffers(self.state) };
 
         if ptr.is_null() {
@@ -192,7 +205,7 @@ impl Stream {
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[inline]
     pub fn intermediate_decode_with_metadata_and_buffer_flush(
-        &self,
+        &mut self,
         num_results: u32,
     ) -> crate::Result<Metadata> {
         let ptr = unsafe {

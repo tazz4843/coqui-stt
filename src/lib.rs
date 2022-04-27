@@ -22,8 +22,6 @@ mod errors;
 mod metadata;
 mod model;
 mod stream;
-#[cfg(feature = "threadsafe-streams")]
-mod threadsafe_stream;
 mod token_metadata;
 
 pub use candidate_transcript::{CandidateTranscript, OwnedCandidateTranscript};
@@ -31,8 +29,6 @@ pub use errors::{Error, Result};
 pub use metadata::{Metadata, OwnedMetadata};
 pub use model::Model;
 pub use stream::Stream;
-#[cfg(feature = "threadsafe-streams")]
-pub use threadsafe_stream::ThreadSafeStream;
 pub use token_metadata::{OwnedTokenMetadata, TokenMetadata};
 
 #[cfg(feature = "raw_bindings")]
