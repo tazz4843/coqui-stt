@@ -50,16 +50,12 @@ fn main() {
     let mut reader = Reader::new(audio_file).unwrap();
     let desc = reader.description();
     // input audio must be mono and usually at 16KHz, but this depends on the model
-    assert_eq!(
-        1,
-        desc.channel_count(),
-        "The channel count is required to be one, at least for now"
-    );
+    let channel_count = desc.channel_count();
 
     let src_sample_rate = desc.sample_rate();
     let dest_sample_rate = m.get_sample_rate() as u32;
     // Obtain the buffer of samples
-    let audio_buf: Vec<_> = if src_sample_rate == dest_sample_rate {
+    let mut audio_buf: Vec<_> = if src_sample_rate == dest_sample_rate {
         reader.samples().map(|s| s.unwrap()).collect()
     } else {
         // We need to interpolate to the target sample rate
@@ -72,6 +68,15 @@ fn main() {
         );
         conv.until_exhausted().map(|v| v[0]).collect()
     };
+    // Convert to mono if required
+    if channel_count == 2 {
+        audio_buf = stereo_to_mono(&audio_buf);
+    } else if channel_count != 1 {
+        panic!(
+            "unknown number of channels: got {}, expected 1 or 2",
+            channel_count
+        );
+    }
 
     let st = Instant::now();
 
@@ -84,4 +89,10 @@ fn main() {
     // Output the result
     println!("{}", result);
     println!("took {}ns", tt.as_nanos());
+}
+
+fn stereo_to_mono(samples: &[i16]) -> Vec<i16> {
+    // converting stereo to mono audio is relatively simple
+    // just take the average of the two channels
+    samples.chunks(2).map(|c| (c[0] + c[1]) / 2).collect()
 }
