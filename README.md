@@ -22,14 +22,19 @@ Some hidden functions are also exposed in the Rust API with `#[doc(hidden)]`.
 
 ### Compiling your code
 
-The Coqui-STT C libraries need to be discoverable by the rust linker. For that, you can do either of the following:
+The Coqui-STT C libraries need to be discoverable by the rust linker. For that, you
+can do either of the following:
 
 -   Move them to a folder in your PATH variable.
--   Create a [build script](https://doc.rust-lang.org/cargo/reference/build-scripts.html) and provide cargo with the path to the libraries with `cargo:rustc-link-search` or `cargo:rustc-link-lib`
+-   Create a [build script](https://doc.rust-lang.org/cargo/reference/build-scripts.html) and
+    provide cargo with the path to the libraries with `cargo:rustc-link-search` or `cargo:rustc-link-lib`
 
 ### Running your code
 
-The libraries also have to be discoverable by the executable. If you followed the first option in the previous section, it will run with no extra effort; otherwise, you will need to copy the libraries to your current working directory (`target/<profile name>` by default). It is recommended that you use a tool such as [cargo-make](https://sagiegurari.github.io/cargo-make/) to automate this.
+The libraries also have to be discoverable by the executable. If you followed the first option
+in the previous section, it will run with no extra effort; otherwise, you will need to copy the
+libraries to your current working directory (`target/<profile name>` by default). It is recommended
+that you use a tool such as [cargo-make](https://sagiegurari.github.io/cargo-make/) to automate this.
 
 ## MSRV
 
