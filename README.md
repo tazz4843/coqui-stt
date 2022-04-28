@@ -29,7 +29,7 @@ The Coqui-STT C libraries need to be discoverable by the rust linker. For that, 
 
 ### Running your code
 
-The libraries also have to be discoverable by the executable. If you followed the first option in the previous section, it will run with no extra effort; otherwise, you will need to copy the libraries to your `target/<profile name>` directory. It is recommended that you use a tool such as [cargo-make](https://sagiegurari.github.io/cargo-make/) to automate this.
+The libraries also have to be discoverable by the executable. If you followed the first option in the previous section, it will run with no extra effort; otherwise, you will need to copy the libraries to your current working directory (`target/<profile name>` by default). It is recommended that you use a tool such as [cargo-make](https://sagiegurari.github.io/cargo-make/) to automate this.
 
 ## MSRV
 
