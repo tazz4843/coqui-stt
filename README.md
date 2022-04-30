@@ -36,6 +36,28 @@ in the previous section, it will run with no extra effort; otherwise, you will n
 libraries to your current working directory (`target/<profile name>` by default). It is recommended
 that you use a tool such as [cargo-make](https://sagiegurari.github.io/cargo-make/) to automate this.
 
+## On Linux
+
+### Compiling your code
+
+As for Windows, the libraries need to be discoverable by the rust linker.
+You have a couple of options:
+
+* Move them to `/usr/local/lib` or `/usr/lib`. This is the recommended way, if you have root
+  access, and plan to run the executable on the same machine where it was built.
+* During build, set the `LIBRARY_PATH` environment variable to the path to where you have the unzipped
+  `libstt.tflite.Linux.zip` file. This requires the corresponding environment variable during execution.
+
+### Running your code
+
+Just like with Windows, the libraries need to be discoverable by the executable. Static linking is not possible.
+
+* If you followed option 1 above, as long as the libraries remain in the directory where they were installed,
+  you should be able to run the executable without issues.
+* If you followed option 2 above, you will need to set the `LD_LIBRARY_PATH` environment variable to the
+  directory where you have the unzipped `libstt.tflite.Linux.zip` file. The libraries do not need to be in the
+  same location as they were during build, as long as `LD_LIBRARY_PATH` is set to the correct location.
+
 ## MSRV
 
 The MSRV is always the latest stable version,
