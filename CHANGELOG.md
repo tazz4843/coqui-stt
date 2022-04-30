@@ -1,3 +1,10 @@
+# Version 0.3.0 (29.4.2022)
+* Finally fix Windows build ([#8](https://github.com/tazz4843/coqui-stt/pull/8))
+* Add `Send` and `Sync` to `Stream` type
+* Change all functions on `Stream` that access the C API to take `&mut self`
+* Remove `ThreadSafeStream`
+* Add docs for compiling and running with `libstt`
+
 # Version 0.2.3 (25.3.2022)
 * Update Coqui-STT to version 1.3.0
 * Add new functions `Model::new_from_buffer`
