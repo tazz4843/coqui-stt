@@ -60,11 +60,13 @@ impl Model {
     /// # Errors
     /// Returns an error if the model is invalid, or for other reasons.
     #[inline]
+    #[cfg(not(target_os = "windows"))]
     pub fn new_from_buffer<'a>(buffer: impl AsRef<&'a [u8]>) -> crate::Result<Self> {
         Self::_new_from_buffer(buffer.as_ref())
     }
 
     #[inline]
+    #[cfg(not(target_os = "windows"))]
     fn _new_from_buffer(buffer: &[u8]) -> crate::Result<Self> {
         let mut state = std::ptr::null_mut::<coqui_stt_sys::ModelState>();
 
@@ -141,6 +143,7 @@ impl Model {
     /// # Errors
     /// Returns an error if the scorer in memory is invalid in some way.
     #[inline]
+    #[cfg(not(target_os = "windows"))]
     pub fn enable_external_scorer_from_buffer(
         &mut self,
         buffer: impl AsRef<[u8]>,
@@ -149,6 +152,7 @@ impl Model {
     }
 
     #[inline]
+    #[cfg(not(target_os = "windows"))]
     fn _enable_external_scorer_from_buffer(&mut self, buffer: &[u8]) -> crate::Result<()> {
         handle_error!(coqui_stt_sys::STT_EnableExternalScorerFromBuffer(
             self.0,
