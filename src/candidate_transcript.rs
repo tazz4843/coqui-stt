@@ -15,7 +15,7 @@ impl CandidateTranscript {
     #[must_use]
     pub fn tokens(&self) -> &[TokenMetadata] {
         let data = self.0.tokens.cast();
-        let len = self.0.num_tokens as usize;
+        let len = self.num_tokens() as usize;
 
         // SAFETY: the inner objects will always be of type TokenMetadata,
         // and the length will always be proper
@@ -44,14 +44,10 @@ impl CandidateTranscript {
     #[inline]
     #[must_use]
     pub fn to_owned(&self) -> OwnedCandidateTranscript {
-        let mut tokens = Vec::with_capacity(self.0.num_tokens as usize);
-        for token in self.tokens() {
-            tokens.push(token.to_owned());
-        }
-
+        let tokens = self.tokens().iter().map(|t| t.to_owned()).collect();
         OwnedCandidateTranscript {
             tokens,
-            confidence: self.0.confidence,
+            confidence: self.confidence(),
         }
     }
 }
