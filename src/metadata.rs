@@ -53,13 +53,7 @@ impl Metadata {
     #[inline]
     #[must_use]
     pub fn to_owned(&self) -> OwnedMetadata {
-        // SAFETY: this object will never be constructed with a null pointer
-        let mut transcripts = Vec::with_capacity(unsafe { *self.0 }.num_transcripts as usize);
-        for transcript in self.transcripts() {
-            transcripts.push(transcript.to_owned());
-        }
-
-        OwnedMetadata(transcripts)
+        OwnedMetadata(self.transcripts().iter().map(|t| t.to_owned()).collect())
     }
 }
 
