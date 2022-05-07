@@ -10,9 +10,6 @@
 //! No features are enabled by default.
 //!
 //! * `raw-bindings`: exposes the [`coqui-stt-sys`](coqui_stt_sys) crate at the root under the same name.
-//! * `threadsafe-streams`: exposes a [`ThreadSafeStream`](crate::ThreadSafeStream) object at the root.
-//! * `async-streams`: exposes async bindings to `ThreadSafeStream`.
-//!   Enables [`flume`](flume)'s `async` feature.
 
 #[macro_use]
 mod helpers;
