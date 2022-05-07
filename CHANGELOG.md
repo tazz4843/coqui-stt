@@ -1,3 +1,7 @@
+# Version 0.3.1 (7.5.2022)
+* Remove outdated documentation lines ([#10](https://github.com/tazz4843/coqui-stt/pull/10))
+* Remove some unsafe code ([#11](https://github.com/tazz4843/coqui-stt/pull/11))
+
 # Version 0.3.0 (29.4.2022)
 * Finally fix Windows build ([#8](https://github.com/tazz4843/coqui-stt/pull/8))
 * Add `Send` and `Sync` to `Stream` type
