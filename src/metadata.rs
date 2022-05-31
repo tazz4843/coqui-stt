@@ -53,7 +53,12 @@ impl Metadata {
     #[inline]
     #[must_use]
     pub fn to_owned(&self) -> OwnedMetadata {
-        OwnedMetadata(self.transcripts().iter().map(|t| t.to_owned()).collect())
+        OwnedMetadata(
+            self.transcripts()
+                .iter()
+                .map(CandidateTranscript::to_owned)
+                .collect(),
+        )
     }
 }
 

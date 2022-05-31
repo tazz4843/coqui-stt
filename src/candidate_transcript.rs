@@ -44,7 +44,7 @@ impl CandidateTranscript {
     #[inline]
     #[must_use]
     pub fn to_owned(&self) -> OwnedCandidateTranscript {
-        let tokens = self.tokens().iter().map(|t| t.to_owned()).collect();
+        let tokens = self.tokens().iter().map(TokenMetadata::to_owned).collect();
         OwnedCandidateTranscript {
             tokens,
             confidence: self.confidence(),

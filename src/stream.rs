@@ -45,7 +45,8 @@ impl Stream {
     pub fn from_model(model: Arc<Model>) -> crate::Result<Self> {
         let mut state = std::ptr::null_mut::<coqui_stt_sys::StreamingState>();
 
-        let retval = unsafe { coqui_stt_sys::STT_CreateStream(model.0, &mut state as *mut _) };
+        let retval =
+            unsafe { coqui_stt_sys::STT_CreateStream(model.0, std::ptr::addr_of_mut!(state)) };
 
         if let Some(e) = crate::Error::from_c_int(retval) {
             return Err(e);
