@@ -7,6 +7,9 @@ use std::sync::Arc;
 pub struct Stream {
     pub(crate) model: Arc<Model>,
     pub(crate) state: *mut coqui_stt_sys::StreamingState,
+    /// True if this state has already been freed.
+    /// This is used to prevent double-freeing.
+    already_freed: bool,
 }
 
 // NOTE:
@@ -22,7 +25,9 @@ unsafe impl Sync for Stream {}
 impl Drop for Stream {
     #[inline]
     fn drop(&mut self) {
-        unsafe { coqui_stt_sys::STT_FreeStream(self.state) }
+        if !self.already_freed {
+            unsafe { coqui_stt_sys::STT_FreeStream(self.state) }
+        }
     }
 }
 
@@ -56,7 +61,11 @@ impl Stream {
             return Err(crate::Error::Unknown);
         }
 
-        Ok(Self { model, state })
+        Ok(Self {
+            model,
+            state,
+            already_freed: false,
+        })
     }
 
     /// Get the inner pointer to the [`StreamingState`](coqui_stt_sys::StreamingState)
@@ -93,7 +102,11 @@ impl Stream {
     /// [`Model`]: Model
     #[inline]
     pub unsafe fn from_ptr(model: Arc<Model>, state: *mut coqui_stt_sys::StreamingState) -> Self {
-        Self { model, state }
+        Self {
+            model,
+            state,
+            already_freed: false,
+        }
     }
 
     /// Return a reference to the [`Model`](crate::Model) this wraps.
@@ -232,10 +245,7 @@ impl Stream {
     pub fn finish_stream(mut self) -> crate::Result<String> {
         let ptr = unsafe { coqui_stt_sys::STT_FinishStream(self.state) };
 
-        unsafe {
-            std::ptr::drop_in_place(&mut self.model);
-        }
-        std::mem::forget(self);
+        self.already_freed = true;
 
         if ptr.is_null() {
             return Err(crate::Error::Unknown);
@@ -269,10 +279,7 @@ impl Stream {
         let ptr =
             unsafe { coqui_stt_sys::STT_IntermediateDecodeWithMetadata(self.state, num_results) };
 
-        unsafe {
-            std::ptr::drop_in_place(&mut self.model);
-        }
-        std::mem::forget(self);
+        self.already_freed = true;
 
         if ptr.is_null() {
             return Err(crate::Error::Unknown);
