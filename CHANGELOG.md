@@ -1,3 +1,7 @@
+# Version 0.3.3
+* Fix double free in `Stream`. This should fix some segfaults users may have.
+* Fix the wrong function being called in `Stream::finish_stream_with_metadata`.
+
 # Version 0.3.2
 * Add `threads` example
 * Fix a small number of Clippy lints behind the scenes
