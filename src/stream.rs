@@ -9,7 +9,7 @@ pub struct Stream {
     pub(crate) state: *mut coqui_stt_sys::StreamingState,
     /// True if this state has already been freed.
     /// This is used to prevent double-freeing.
-    already_freed: bool,
+    pub(crate) already_freed: bool,
 }
 
 // NOTE:

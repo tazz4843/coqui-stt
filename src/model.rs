@@ -336,6 +336,10 @@ impl Model {
         debug!("wrapping self in an Arc");
         let model = Arc::new(self);
 
-        Ok(Stream { model, state })
+        Ok(Stream {
+            model,
+            state,
+            already_freed: false,
+        })
     }
 }
