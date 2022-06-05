@@ -276,8 +276,7 @@ impl Stream {
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[inline]
     pub fn finish_stream_with_metadata(mut self, num_results: u32) -> crate::Result<Metadata> {
-        let ptr =
-            unsafe { coqui_stt_sys::STT_IntermediateDecodeWithMetadata(self.state, num_results) };
+        let ptr = unsafe { coqui_stt_sys::STT_FinishStreamWithMetadata(self.state, num_results) };
 
         self.already_freed = true;
 
