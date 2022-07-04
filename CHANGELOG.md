@@ -1,3 +1,10 @@
+# Version 1.0.0 (4.7.2022)
+* Fix Undefined Behavior in `Stream`.
+  This causes `Stream` to now require a mutable reference to a `Model` to be created.
+  We now recommend using [deadpool](https://crates.io/crates/deadpool) to manage `Model`s.
+* Implement `deadpool::managed::Manager` for `Model`.
+  This allows `Model` to be used with [deadpool](https://crates.io/crates/deadpool).
+
 # Version 0.3.3
 * Fix double free in `Stream`. This should fix some segfaults users may have.
 * Fix the wrong function being called in `Stream::finish_stream_with_metadata`.
