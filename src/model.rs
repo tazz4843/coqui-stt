@@ -1,9 +1,7 @@
 #![allow(clippy::missing_safety_doc)]
 use crate::{Metadata, Stream};
-use log::debug;
 use std::ffi::CStr;
 use std::os::raw::c_uint;
-use std::sync::Arc;
 
 /// A trained Coqui STT model.
 pub struct Model(pub(crate) *mut coqui_stt_sys::ModelState);
@@ -308,36 +306,27 @@ impl Model {
 
     /// Convert this model into one used for streaming inference states.
     ///
-    /// Note that once this is called, the model can no longer be mutated in any way
-    /// due to being moved behind an [`Arc`](Arc).
+    /// Note that this requires exclusive access to the model,
+    /// so it is not possible to use the same model for multiple streams concurrently.
     ///
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn into_streaming(self) -> crate::Result<Stream> {
-        debug!("making nullptr for streaming state");
+    pub fn as_streaming(&mut self) -> crate::Result<Stream> {
         let mut state = std::ptr::null_mut();
 
-        debug!("calling CreateStream");
         let retval = unsafe { coqui_stt_sys::STT_CreateStream(self.0, &mut state) };
 
-        debug!("checking retval");
         if let Some(e) = crate::Error::from_c_int(retval) {
-            debug!("retval was an error, bailing out");
             return Err(e);
         }
 
-        debug!("checking if ptr is null");
         if state.is_null() {
-            debug!("ptr is null, bailing out");
             return Err(crate::Error::Unknown);
         }
 
-        debug!("wrapping self in an Arc");
-        let model = Arc::new(self);
-
         Ok(Stream {
-            model,
+            model: self,
             state,
             already_freed: false,
         })

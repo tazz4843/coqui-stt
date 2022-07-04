@@ -1,11 +1,9 @@
 use crate::{Metadata, Model};
 use std::ffi::CStr;
-use std::mem::ManuallyDrop;
-use std::sync::Arc;
 
 /// Streaming inference state.
-pub struct Stream {
-    pub(crate) model: Arc<Model>,
+pub struct Stream<'a> {
+    pub(crate) model: &'a mut Model,
     pub(crate) state: *mut coqui_stt_sys::StreamingState,
     /// True if this state has already been freed.
     /// This is used to prevent double-freeing.
@@ -19,10 +17,10 @@ pub struct Stream {
 // the compiler statically enforces that this is used from
 // only one thread at a time with mutable references on all
 // functions that access the C API.
-unsafe impl Send for Stream {}
-unsafe impl Sync for Stream {}
+unsafe impl Send for Stream<'_> {}
+unsafe impl Sync for Stream<'_> {}
 
-impl Drop for Stream {
+impl Drop for Stream<'_> {
     #[inline]
     fn drop(&mut self) {
         if !self.already_freed {
@@ -31,23 +29,13 @@ impl Drop for Stream {
     }
 }
 
-impl Stream {
-    /// Attempt to create a new `Stream`
-    /// by cloning the [`Model`](Model) this one points to.
-    ///
-    /// # Errors
-    /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
-    #[inline]
-    pub fn try_clone(&self) -> crate::Result<Self> {
-        Self::from_model(Arc::clone(&self.model))
-    }
-
+impl<'a> Stream<'a> {
     /// Create a new `Stream` from a [`Model`](Model).
     ///
     /// # Errors
     /// Passes through any errors from the C library. See enum [`Error`](crate::Error).
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn from_model(model: Arc<Model>) -> crate::Result<Self> {
+    pub fn from_model(model: &'a mut Model) -> crate::Result<Stream<'a>> {
         let mut state = std::ptr::null_mut::<coqui_stt_sys::StreamingState>();
 
         let retval =
@@ -74,7 +62,7 @@ impl Stream {
     /// # Safety
     /// Once this is called, the memory management of the `Stream` is no longer handled for you.
     ///
-    /// The [`Model`] object must not be disposed of until all `Stream`s pointing to it are disposed of.
+    /// The [`Model`] object this stream points to must not be disposed of until this `Stream` is disposed of.
     ///
     /// Once you are done with the pointer, to dispose of the state properly,
     /// you must not forget to either (NOT BOTH):
@@ -86,9 +74,9 @@ impl Stream {
     /// [`from_ptr`]: Stream::from_ptr
     #[inline]
     #[must_use]
-    pub unsafe fn into_state(self) -> (Arc<Model>, *mut coqui_stt_sys::StreamingState) {
-        let this = ManuallyDrop::new(self);
-        (Arc::clone(&this.model), this.state)
+    pub unsafe fn into_state(mut self) -> *mut coqui_stt_sys::StreamingState {
+        self.already_freed = true;
+        self.state
     }
 
     /// Recreate a `Stream` with a pointer to a [`StreamingState`]
@@ -101,7 +89,10 @@ impl Stream {
     /// [`StreamingState`]: coqui_stt_sys::StreamingState
     /// [`Model`]: Model
     #[inline]
-    pub unsafe fn from_ptr(model: Arc<Model>, state: *mut coqui_stt_sys::StreamingState) -> Self {
+    pub unsafe fn from_ptr(
+        model: &'a mut Model,
+        state: *mut coqui_stt_sys::StreamingState,
+    ) -> Stream<'a> {
         Self {
             model,
             state,
@@ -109,11 +100,18 @@ impl Stream {
         }
     }
 
-    /// Return a reference to the [`Model`](crate::Model) this wraps.
+    /// Return a reference to the [`Model`](crate::Model) this `Stream` references.
     #[inline]
     #[must_use]
-    pub fn model(&self) -> Arc<Model> {
-        Arc::clone(&self.model)
+    pub fn model(&self) -> &Model {
+        self.model
+    }
+
+    /// Return a mutable reference to the [`Model`](crate::Model) this wraps.
+    #[inline]
+    #[must_use]
+    pub fn model_mut(&mut self) -> &mut Model {
+        self.model
     }
 
     /// Feed audio samples to an ongoing streaming inference.

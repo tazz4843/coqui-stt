@@ -104,37 +104,37 @@ impl Display for Error {
     #[allow(clippy::missing_inline_in_public_items)]
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let fancy_err: std::borrow::Cow<str> = match self {
-            Error::NoModel => "Missing model information.".into(),
-            Error::InvalidAlphabet => {
+            Self::NoModel => "Missing model information.".into(),
+            Self::InvalidAlphabet => {
                 "Invalid alphabet embedded in model. (Data corruption?)".into()
             }
-            Error::InvalidShape => "Invalid model shape.".into(),
-            Error::InvalidScorer => "Invalid scorer file.".into(),
-            Error::ModelIncompatible => "Incompatible model.".into(),
-            Error::ScorerNotEnabled => "External scorer is not enabled.".into(),
-            Error::ScorerUnreadable => "Could not read scorer file.".into(),
-            Error::ScorerInvalidHeader => {
+            Self::InvalidShape => "Invalid model shape.".into(),
+            Self::InvalidScorer => "Invalid scorer file.".into(),
+            Self::ModelIncompatible => "Incompatible model.".into(),
+            Self::ScorerNotEnabled => "External scorer is not enabled.".into(),
+            Self::ScorerUnreadable => "Could not read scorer file.".into(),
+            Self::ScorerInvalidHeader => {
                 "Could not recognize language model header in scorer.".into()
             }
-            Error::ScorerNoTrie => {
+            Self::ScorerNoTrie => {
                 "Reached end of scorer file before loading vocabulary trie.".into()
             }
-            Error::ScorerInvalidTrie => "Invalid magic in trie header.".into(),
-            Error::ScorerVersionMismatch => {
+            Self::ScorerInvalidTrie => "Invalid magic in trie header.".into(),
+            Self::ScorerVersionMismatch => {
                 "Scorer file version does not match expected version.".into()
             }
-            Error::InitMmapFailed => "Failed to initialize memory mapped model.".into(),
-            Error::InitSessionFailed => "Failed to initialize the session.".into(),
-            Error::InterpreterFailed => "Interpreter failed.".into(),
-            Error::RunSessionFailed => "Failed to run the session.".into(),
-            Error::CreateStreamFailed => "Error creating the stream.".into(),
-            Error::ReadProtoBufFailed => "Error reading the proto buffer model file.".into(),
-            Error::CreateSessionFailed => "Failed to create session.".into(),
-            Error::CreateModelFailed => "Could not allocate model state.".into(),
-            Error::InsertHotWordFailed => "Could not insert hot-word.".into(),
-            Error::ClearHotWordsFailed => "Could not clear hot-words.".into(),
-            Error::EraseHotWordFailed => "Could not erase hot-word.".into(),
-            Error::Utf8Error(e) => format!(
+            Self::InitMmapFailed => "Failed to initialize memory mapped model.".into(),
+            Self::InitSessionFailed => "Failed to initialize the session.".into(),
+            Self::InterpreterFailed => "Interpreter failed.".into(),
+            Self::RunSessionFailed => "Failed to run the session.".into(),
+            Self::CreateStreamFailed => "Error creating the stream.".into(),
+            Self::ReadProtoBufFailed => "Error reading the proto buffer model file.".into(),
+            Self::CreateSessionFailed => "Failed to create session.".into(),
+            Self::CreateModelFailed => "Could not allocate model state.".into(),
+            Self::InsertHotWordFailed => "Could not insert hot-word.".into(),
+            Self::ClearHotWordsFailed => "Could not clear hot-words.".into(),
+            Self::EraseHotWordFailed => "Could not erase hot-word.".into(),
+            Self::Utf8Error(e) => format!(
                 "A string returned by `libstt` contained invalid UTF-8: {}",
                 e
             )

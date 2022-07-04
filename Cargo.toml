@@ -13,7 +13,6 @@ categories = ["multimedia::audio"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-log = "0.4.14"
 coqui-stt-sys = "1.3.0"
 
 [dev-dependencies]
