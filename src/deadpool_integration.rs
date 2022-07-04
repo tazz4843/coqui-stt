@@ -53,9 +53,11 @@ impl Manager for DeadpoolModelWrapper {
     type Error = DeadpoolModelWrapperError;
 
     async fn create(&self) -> Result<Self::Type, Self::Error> {
-        let mut m = SyncWrapper::new(self.runtime, || crate::Model::new(&self.model_path)).await?;
+        let model_path = self.model_path.clone();
+        let mut m = SyncWrapper::new(self.runtime, move || crate::Model::new(model_path)).await?;
         if let Some(scorer_path) = &self.scorer_path {
-            m.interact(|m| m.enable_external_scorer(scorer_path))
+            let scorer_path = scorer_path.clone();
+            m.interact(move |m| m.enable_external_scorer(scorer_path))
                 .await??;
         }
 
