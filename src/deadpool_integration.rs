@@ -62,9 +62,7 @@ impl Manager for DeadpoolModelWrapper {
         Ok(m)
     }
 
-    async fn recycle(&self, obj: &mut Self::Type) -> RecycleResult<Self::Error> {
-        obj.interact(|m| m.clear_hot_words()).await??;
-
+    async fn recycle(&self, _: &mut Self::Type) -> RecycleResult<Self::Error> {
         Ok(())
     }
 }
