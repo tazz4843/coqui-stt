@@ -1,3 +1,6 @@
+# Version 1.0.2 (4.7.2022)
+* Fix bugs that somehow slipped through testing, again in `DeadpoolModelWrapper`.
+
 # Version 1.0.1 (4.7.2022)
 * Export public interface to `DeadpoolModelWrapper` and its helpers.
 
