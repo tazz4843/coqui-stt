@@ -16,6 +16,7 @@ categories = ["multimedia::audio"]
 coqui-stt-sys = "1.3.0"
 deadpool = { version = "0.9", optional = true }
 deadpool-sync = { version = "0.1", optional = true }
+async-trait = { version = "0.1", optional = true }
 
 [dev-dependencies]
 audrey = "0.3"
@@ -25,4 +26,4 @@ dasp_interpolate = { version = "0.11", features = ["linear"] }
 [features]
 default = []
 raw-bindings = []
-deadpool_integration = ["deadpool", "deadpool-sync"]
+deadpool_integration = ["deadpool", "deadpool-sync", "async-trait"]

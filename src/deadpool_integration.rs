@@ -8,6 +8,7 @@ use deadpool_sync::SyncWrapper;
 pub struct DeadpoolModelWrapper {
     model_path: String,
     scorer_path: Option<String>,
+    runtime: Runtime,
 }
 
 impl DeadpoolModelWrapper {
@@ -16,10 +17,15 @@ impl DeadpoolModelWrapper {
     /// # Arguments
     /// * `model_path` - Path to the model.
     /// * `scorer_path` - Path to the scorer. Optional.
-    pub fn new(model_path: impl Into<String>, scorer_path: Option<impl Into<String>>) -> Self {
+    pub fn new(
+        model_path: impl Into<String>,
+        scorer_path: Option<impl Into<String>>,
+        runtime: Runtime,
+    ) -> Self {
         Self {
             model_path: model_path.into(),
             scorer_path: scorer_path.map(Into::into),
+            runtime,
         }
     }
 }
@@ -41,9 +47,10 @@ impl From<InteractError> for DeadpoolModelWrapperError {
     }
 }
 
+#[async_trait::async_trait]
 impl Manager for DeadpoolModelWrapper {
     type Type = SyncWrapper<crate::Model>;
-    type Error = crate::Error;
+    type Error = DeadpoolModelWrapperError;
 
     async fn create(&self) -> Result<Self::Type, Self::Error> {
         let mut m = SyncWrapper::new(self.runtime, || crate::Model::new(&self.model_path)).await?;
