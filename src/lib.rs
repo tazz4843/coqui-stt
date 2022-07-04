@@ -24,6 +24,8 @@ mod stream;
 mod token_metadata;
 
 pub use candidate_transcript::{CandidateTranscript, OwnedCandidateTranscript};
+#[cfg(feature = "deadpool_integration")]
+pub use deadpool_integration::*;
 pub use errors::{Error, Result};
 pub use metadata::{Metadata, OwnedMetadata};
 pub use model::Model;

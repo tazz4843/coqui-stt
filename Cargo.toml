@@ -1,6 +1,6 @@
 [package]
 name = "coqui-stt"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["0/0 <zero@imaskeleton.me>"]
 description = "Safe wrapper around the Coqui STT C library"

@@ -1,3 +1,6 @@
+# Version 1.0.1 (4.7.2022)
+* Export public interface to `DeadpoolModelWrapper` and its helpers.
+
 # Version 1.0.0 (4.7.2022)
 * Fix Undefined Behavior in `Stream`.
   This causes `Stream` to now require a mutable reference to a `Model` to be created.
