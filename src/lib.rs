@@ -15,6 +15,8 @@
 mod helpers;
 
 mod candidate_transcript;
+#[cfg(feature = "deadpool_integration")]
+mod deadpool_integration;
 mod errors;
 mod metadata;
 mod model;
