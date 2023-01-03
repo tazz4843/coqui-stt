@@ -72,7 +72,7 @@ impl Model {
         // both of which have been checked
         let retval = unsafe {
             coqui_stt_sys::STT_CreateModelFromBuffer(
-                buffer.as_ptr().cast::<i8>(),
+                buffer.as_ptr().cast::<std::os::raw::c_char>(),
                 buffer.len() as c_uint,
                 std::ptr::addr_of_mut!(state),
             )
@@ -154,7 +154,7 @@ impl Model {
     fn _enable_external_scorer_from_buffer(&mut self, buffer: &[u8]) -> crate::Result<()> {
         handle_error!(coqui_stt_sys::STT_EnableExternalScorerFromBuffer(
             self.0,
-            buffer.as_ptr().cast::<i8>(),
+            buffer.as_ptr().cast::<std::os::raw::c_char>(),
             buffer.len() as c_uint
         ))
     }
