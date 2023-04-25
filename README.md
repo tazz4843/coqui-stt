@@ -1,5 +1,9 @@
 # coqui-stt
 
+## NOTICE
+The upstream project is now unmaintained, and they recommend switching to Whisper or another STT service.
+I have written bindings for whisper.cpp as well, and you can find those over at https://github.com/tazz4843/whisper-rs.
+
 Docs: https://docs.rs/coqui-stt/latest/coqui_stt
 
 crates.io: https://crates.io/crates/coqui-stt
